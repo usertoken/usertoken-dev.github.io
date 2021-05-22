@@ -1,0 +1,44 @@
+{
+  "name": "appengine-standard-getting-started-update-apps",
+  "version": "0.0.1",
+  "description": "Node.js getting started sample for updating an app on App Engine standard environment.",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "clean": "npx shx rm -rf ./build",
+    "prebuild": "npm run clean;npx shx mkdir -p ./build",
+    "build": "npx npm-run-all -l -p build:*",
+    "build:app": "npx shx cp -r app.* ./build",
+    "build:client": "npx shx cp -r client.html ./build",
+    "build:assets": "npx shx cp -r assets ./build",
+    "build:views": "npx shx cp -r views ./build",
+    "build:ws": "npx shx cp -r ws ./build",
+    "build:package": "npx shx cp -r package.json ./build",
+    "start": "node app.js",
+    "dev": "nodemon --watch \"./\" --exec \"node app.js\"",
+    "deploy": "gcloud app deploy",
+    "test": "mocha test/*.test.js --exit --timeout=20000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": "14.x.x"
+  },
+  "author": "Google Inc.",
+  "license": "Apache-2.0",
+  "dependencies": {
+            "express": "^4.17.1",
+            "gun": "^0.2020.301"
+  },
+  "devDependencies": {
+            "nodemon": "^2.0.2",
+            "npm-run-all": "^4.1.5",
+            "shx": "^0.3.3",
+    "mocha": "^8.0.0",
+    "sinon": "^10.0.0",
+    "supertest": "^6.0.0",
+    "proxyquire": "^2.1.3"
+  }
+}

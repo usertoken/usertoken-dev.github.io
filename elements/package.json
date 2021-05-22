@@ -1,0 +1,70 @@
+{
+  "name": "luckydogsf415",
+  "version": "1.0.0",
+  "private": true,
+  "description": "luckydogsf415 home page.",
+  "keywords": [
+    "react",
+    "fluentui",
+    "windows10",
+    "user-interface",
+    "react-component",
+    "responsive",
+    "uwp",
+    "electron",
+    "mobile"
+  ],
+  "homepage": "./",
+  "bugs": {
+    "url": "https://luckydogsf415.bellbella.com/issues"
+  },
+  "license": "PRIVATE",
+  "author": {
+    "name": "Alex Davis",
+    "email": "admin@bellbella.com"
+  },
+  "dependencies": {
+    "node-sass": "5.0.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "4.0.3",
+    "web-vitals": "1.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luckydogsf415"
+  },
+  "scripts": {
+    "clean": "npx shx rm -rf build",
+    "postinstall": "echo 'SKIP_PREFLIGHT_CHECK=true' > .env",
+    "stage": "npx http-server -p 3000 ./build",
+    "start": "PORT=3000 npx react-scripts start",
+    "build": "npx react-scripts build",
+    "prebuild": "npx node-sass src/source/stylesheet/main.scss src/home/framework/lib/dist/react-windows-ui.min.css --output-style compressed",
+    "predeploy": "npm run build",
+    "deploy": "npx gh-pages -d build",
+    "eject": "npx react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "http-server": "0.12.3"
+  }
+}
