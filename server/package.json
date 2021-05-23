@@ -8,7 +8,7 @@
     "clean": "npx shx rm -rf ./build",
     "prebuild": "npm run clean;npx shx mkdir -p ./build",
     "build": "npx npm-run-all -l -p build:*",
-    "build:app": "npx shx cp -r *.js ./build",
+    "build:app": "npx shx cp -r app.* ./build",
     "build:client": "npx shx cp -r client.html ./build",
     "build:assets": "npx shx cp -r assets ./build",
     "build:views": "npx shx cp -r views ./build",
