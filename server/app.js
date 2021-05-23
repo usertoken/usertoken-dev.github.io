@@ -14,64 +14,10 @@
 
 'use strict';
 
-// [START app]
-const express = require('express');
-const path = require('path');
-const Gun = require('gun');
-
-const app = express();
-require('gun/nts');
-require('gun/axe');
-require('gun/sea');
-
-const peers = [
-      'https://genesis.bellbella.com/gun',
-      'https://seed01.usertoken.com/gun',
-      'https://usertoken.com/gun',
-]
-
-const  gun = Gun({file: '/tmp/www-usertoken-app', web: app, peers});
-
-// [START enable_parser]
-// This middleware is available in Express v4.16.0 onwards
-app.use(express.static(__dirname));
-app.use(express.json({extended: true}));
-app.use(Gun.serve);
-// [END enable_parser]
-
-app.get('/hello', (req, res) => {
-  res.send('Hello from App Engine!');
-});
-
-app.get('/:room', function(req, res) {
-      res.redirect('/?room=' + req.params.room);
-});
-
-// [START add_display_form]
-app.get('/submit', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/form.html'));
-});
-// [END add_display_form]
-
-// [START add_post_handler]
-app.post('/submit', (req, res) => {
-  console.log({
-    name: req.body.name,
-    message: req.body.message,
-  });
-  res.send('Thanks for your message!');
-});
-// [END add_post_handler]
-
-// Listen to the App Engine-specified port, or 8080 otherwise
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`);
-});
-
-global.Gun = Gun; /// make global to `node --inspect` - debug only
-global.gun = gun; /// make global to `node --inspect` - debug only
-
-// [END app]
-
+const { network } = require('./network');
+const app = options => {
+  // Listen to the App Engine-specified port, or 8080 otherwise
+  let PORT = options && options.port? options.port : process.env.PORT || 8080;
+  return network({PORT})
+}
 module.exports = app;
