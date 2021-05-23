@@ -16,13 +16,23 @@
 
 const network  = require('./network');
 
-const app = options => {
+const app = async options => {
   // Listen to the App Engine-specified port, or 8080 otherwise
   let port = process.env.PORT || 8080;
   port = options && options.port? options.port : 8080;
-
-  console.log('1.app starting on port:', port)
-  return network({port})
+  let root = {}
+  // console.log('1.app starting on port:', port)
+  try {
+    const { gun } = await network({port})
+  } catch(e){
+    console.log('2.app network error:',e)
+  }
+  if (gun) {
+    root = gun.get('/');
+    root.get('paths').map().once((node, value)=> {
+      // console.log('3.app node:', value, node)
+    })
+  }
 }
 app()
 //
