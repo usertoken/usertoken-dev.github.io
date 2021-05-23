@@ -30,7 +30,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "express": "^4.17.1",
-    "gun": "^0.2020.301"
+    "gun": "^0.2020.301",
+    "shelljs": "^0.8.4"
   },
   "devDependencies": {
     "mocha": "^8.0.0",
