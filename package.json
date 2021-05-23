@@ -18,6 +18,9 @@
     "unlock:package": "find . -name package-lock.json | xargs rm -f",
     "unlock:yarn": "find . -name yarn.lock | xargs rm -f"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "keywords": [],
   "author": "",
   "license": "apache",
