@@ -12,7 +12,7 @@ require('gun/axe');
 require('gun/sea');
 
 const HOME = __dirname;
-const seed = `${HOME}/.data/${Date.now()}-seed`;
+const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
 
 const peers = [
