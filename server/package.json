@@ -17,6 +17,7 @@
     "build:package": "npx shx cp -r package.json ./build",
     "start": "node app.js",
     "dev": "nodemon --watch \"./\" --exec \"node app.js\"",
+    "predeploy": "gcloud debug source gen-repo-info-file",
     "deploy": "gcloud app deploy",
     "test": "mocha test/*.test.js --exit --timeout=20000"
   },
@@ -30,6 +31,7 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
+    "@google-cloud/debug-agent": "^5.2.0",
     "express": "^4.17.1",
     "gun": "^0.2020.301",
     "shelljs": "^0.8.4"

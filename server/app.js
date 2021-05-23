@@ -14,6 +14,14 @@
 
 'use strict';
 
+require('@google-cloud/debug-agent').start({
+  serviceContext: {
+    service: 'www',
+    version: '1.0.0',
+    enableCanary: true,
+  }
+});
+
 const network  = require('./network');
 
 const app = async options => {
