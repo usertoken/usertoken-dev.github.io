@@ -14,10 +14,16 @@
 
 'use strict';
 
-const { network } = require('./network');
+const network  = require('./network');
+
 const app = options => {
   // Listen to the App Engine-specified port, or 8080 otherwise
-  let PORT = options && options.port? options.port : process.env.PORT || 8080;
-  return network({PORT})
+  let port = process.env.PORT || 8080;
+  port = options && options.port? options.port : 8080;
+
+  console.log('1.app starting on port:', port)
+  return network({port})
 }
+app()
+//
 module.exports = app;

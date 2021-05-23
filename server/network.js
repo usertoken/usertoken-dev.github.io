@@ -3,6 +3,7 @@
 const express = require('express');
 const path = require('path');
 const Gun = require('gun');
+const shelljs = require('shelljs');
 
 const web = express();
 
@@ -13,6 +14,8 @@ require('gun/lib/path.js')
 
 const HOME = __dirname;
 const seed = `${HOME}/.data/${Date.now()}-seed`;
+shelljs.mkdir('-p',seed)
+
 const peers = [
   'https://seed.alex2006hw.com/gun',
   'https://seed.bellbella.com/gun',
@@ -57,27 +60,96 @@ web.post('/submit', (req, res) => {
   res.send({answer});
 });
 // [END add_post_handler]
+const createNetworkNodes = options => {
+  const { nexus, path, node } = options
+  nexus.path(path).set(node).put({});
+}
+const createNetworkPaths = options => {
+  const { nexus, path, nodes } = options
+  for (const node of nodes ) createNetworkNodes({node,nexus,path})
+}
+const createNetworkConnections = options => {
+  const { nexuses, path, nodes } = options
+  for (const nexus of nexuses) createNetworkPaths({nexus, path, nodes})
+}
+const connectNetworkPaths = options => {
+  const { nexus, nodes } = options
+  createNetworkPaths({nexus, path: 'paths', nodes})
+}
+const setupPath = options => {
+  const { path, node} = options
+  node.path(path).set(node).put({})
+}
+const setupNodes = options => {
+  const { nodes, path} = options
+  nodes.forEach(node => setupPath({path, node}))
+}
+const setupNodesPath = options => {
+  const { nodes, path } = options
+  setupNodes({nodes, path})
+}
+const setupRootPaths = options => {
+  const { root, network } = options
+  root.path('root').set(root).put({});
+  root.path('network').set(network).put({});
+ 
 
+  // root.path('accessnexus').set(accessnexus).put({});
+  // root.path('beaconnexus').set(beaconnexus).put({});
+  // root.path('hiddennexus').set(hiddennexus).put({});
+  // root.path('lognexus').set(lognexus).put({});
+  // root.path('metricnexus').set(metricnexus).put({});
+  // root.path('rewardnexus').set(rewardnexus).put({});
+
+  // root.path('alex2006hw').set(alex2006hw).put({});
+  // root.path('bellbella').set(bellbella).put({});
+  // root.path('clouderg').set(clouderg).put({});
+  // root.path('nautilusly').set(nautilusly).put({});
+  // root.path('pointlook').set(pointlook).put({});
+  // root.path('usertoken').set(usertoken).put({});
+  // root.path('workagent').set(workagent).put({});
+
+  // connecting the nodes
+  // root.path('paths').set(root).put({})
+  // root.path('paths').set(network).put({})
+  // root.path('paths').set(accessnexus).put({})
+  // root.path('paths').set(beaconnexus).put({});
+  // root.path('paths').set(hiddennexus).put({});
+  // root.path('paths').set(lognexus).put({});
+  // root.path('paths').set(metricnexus).put({});
+  // root.path('paths').set(rewardnexus).put({});
+
+  // root.path('paths').set(alex2006hw).put({});
+  // root.path('paths').set(bellbella).put({});
+  // root.path('paths').set(clouderg).put({});
+  // root.path('paths').set(nautilusly).put({});
+  // root.path('paths').set(pointlook).put({});
+  // root.path('paths').set(usertoken).put({});
+  // root.path('paths').set(workagent).put({});
+}
+//
 const createNetwork = options => {
-  const { network } = options;
-  const root = network.get('/').put({});
-  const network = network.get('network').put({});
+  const { Network } = options;
+  const root = Network.get('/').put({});
+  const network = Network.get('network').put({});
 
-  const accessnexus = network.get('accessnexus').put({});
-  const beaconnexus = network.get('beaconnexus').put({});
-  const hiddennexus = network.get('hiddennexus').put({});
-  const lognexus = network.get('lognexus').put({});
-  const metricnexus = network.get('metricnexus').put({});
-  const rewardnexus = network.get('rewardnexus').put({});
+  const accessnexus = Network.get('accessnexus').put({});
+  const beaconnexus = Network.get('beaconnexus').put({});
+  const hiddennexus = Network.get('hiddennexus').put({});
+  const lognexus = Network.get('lognexus').put({});
+  const metricnexus = Network.get('metricnexus').put({});
+  const rewardnexus = Network.get('rewardnexus').put({});
 
-  const alex2006hw = network.get('alex2006hw').put({});
-  const bellbella = network.get('bellbella').put({});
-  const clouderg = network.get('clouderg').put({});
-  const nautilusly = network.get('nautilusly').put({});
-  const pointlook = network.get('pointlook').put({});
-  const usertoken = network.get('usertoken').put({});
-  const workagent = network.get('workagent').put({});
-
+  const alex2006hw = Network.get('alex2006hw').put({});
+  const bellbella = Network.get('bellbella').put({});
+  const clouderg = Network.get('clouderg').put({});
+  const nautilusly = Network.get('nautilusly').put({});
+  const pointlook = Network.get('pointlook').put({});
+  const usertoken = Network.get('usertoken').put({});
+  const workagent = Network.get('workagent').put({});
+  //
+  setupRootPaths({root, network})
+  //
   const paths = [
     'root',
     'network',
@@ -132,79 +204,15 @@ const createNetwork = options => {
     workagent,
 
   ]
-  const createNetworkNodes = options => {
-    const { nexus, path, node } = options
-    nexus.path(path).set(node).put({});
-  }
-  const createNetworkPaths = options => {
-    const { nexus, path, nodes } = options
-    nodes.map(node => createNetworkNodes({node,nexus,path}))
-  }
-  const createNetworkConnections = options => {
-    const { nexuses, path, nodes } = options
-    nexuses.map(nexus => createNetworkPath({nexus, path, nodes}))
-  }
-  const connectNetworkPaths = options => {
-    const { nexus, nodes } = options
-    createNetworkPath({nexus, path: 'paths', nodes})
-  }
-  paths.map(path => path !== 'root' && setupNodesPath({path, nodes}))
-  paths.map(path => createNetworkConnections({path, nexuses, nodes}))
-  nexuses.map(nexus => connectNetworkPaths(nexus, nodes))
   //
-  const setupPath = options => {
-    const { path, node} = options
-    node.path(path).set(node).put({})
-  }
-  const setupNodes = options => {
-    const { nodes, path} = options
-    nodes.map(node => setupPath({path, node}))
-  }
-  const setupNodesPath = options => {
-    const { nodes, path } = options
-    setupNodes({nodes, path})
-  }
-  const setupRootPaths = options => {
-    const { root, network } = options
-    root.path('root').set(root).put({});
-    root.path('network').set(network).put({});
-   
-
-    // root.path('accessnexus').set(accessnexus).put({});
-    // root.path('beaconnexus').set(beaconnexus).put({});
-    // root.path('hiddennexus').set(hiddennexus).put({});
-    // root.path('lognexus').set(lognexus).put({});
-    // root.path('metricnexus').set(metricnexus).put({});
-    // root.path('rewardnexus').set(rewardnexus).put({});
-  
-    // root.path('alex2006hw').set(alex2006hw).put({});
-    // root.path('bellbella').set(bellbella).put({});
-    // root.path('clouderg').set(clouderg).put({});
-    // root.path('nautilusly').set(nautilusly).put({});
-    // root.path('pointlook').set(pointlook).put({});
-    // root.path('usertoken').set(usertoken).put({});
-    // root.path('workagent').set(workagent).put({});
-  
-    // connecting the nodes
-    // root.path('paths').set(root).put({})
-    // root.path('paths').set(network).put({})
-    // root.path('paths').set(accessnexus).put({})
-    // root.path('paths').set(beaconnexus).put({});
-    // root.path('paths').set(hiddennexus).put({});
-    // root.path('paths').set(lognexus).put({});
-    // root.path('paths').set(metricnexus).put({});
-    // root.path('paths').set(rewardnexus).put({});
-  
-    // root.path('paths').set(alex2006hw).put({});
-    // root.path('paths').set(bellbella).put({});
-    // root.path('paths').set(clouderg).put({});
-    // root.path('paths').set(nautilusly).put({});
-    // root.path('paths').set(pointlook).put({});
-    // root.path('paths').set(usertoken).put({});
-    // root.path('paths').set(workagent).put({});
+  for (const nexus of nexuses) connectNetworkPaths({nexus, nodes})
+  //
+  for (const path of paths) createNetworkConnections({path, nexuses, nodes})
+  //
+  for(const path of paths) {
+    if (path !== 'root') setupNodesPath({path, nodes})
   }
   //
-  setupRootPaths({root, network})
   return ({paths,nodes})
 }
 
@@ -214,20 +222,19 @@ const network = options => {
     let answer = `Network listening on port ${port}...`
     //
     const optGun = {file: seed, web, peers}
-    const network = Gun(optGun);
+    const Network = Gun(optGun);
+    global.Gun = Gun; /// make global to `node --inspect` - debug only
+    global.gun = Network; /// make global to `node --inspect` - debug only
     //
-    const { paths,nodes } = createNetwork({network});
+    const { paths,nodes } = createNetwork({Network});
     //
     console.log({answer});
-    console.log({paths,nodes});
+    // console.log({paths,nodes});
     //
     return ({paths,nodes})
   });
   return ({web})
 }
-
-global.Gun = Gun; /// make global to `node --inspect` - debug only
-global.gun = gun; /// make global to `node --inspect` - debug only
 
 // [END app]
 module.exports = network;
