@@ -14,20 +14,19 @@
 
 'use strict';
 
-require('@google-cloud/debug-agent').start({
-  serviceContext: {
-    service: 'www',
-    version: '1.0.0',
-    enableCanary: true,
-  }
-});
+// require('@google-cloud/debug-agent').start({
+//   serviceContext: {
+//     service: 'www',
+//     version: '1.0.0',
+//     enableCanary: true,
+//   }
+// });
 
 const network  = require('./network');
 
 const app = async options => {
   // Listen to the App Engine-specified port, or 8080 otherwise
-  let port = process.env.PORT || 8080;
-  port = options && options.port? options.port : 8080;
+  let port = process.env.PORT || options && options.port? options.port : 3000;
   let root = {}
   // console.log('1.app starting on port:', port)
   try {

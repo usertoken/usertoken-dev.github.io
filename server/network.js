@@ -23,6 +23,9 @@ const peers = [
   'https://seed.workagent.com/gun',
   'https://seed.usertoken.com/gun',
   'https://seed.nautilusly.com/gun',
+  'https://gun-us.herokuapp.com/gun',
+  'https://gun-eu.herokuapp.com/gun',
+  'https://gunjs.herokuapp.com/gun',
 ];
 
 // [START enable_parser]
@@ -33,7 +36,7 @@ web.use(Gun.serve);
 // [END enable_parser]
 
 web.get('/login', (req, res) => {
-  let answer = `Welcome from ${HOME}`
+  let answer = {msg:`Welcome from ${HOME}`, peers}
   console.log(answer);
   res.send({answer});
 });
@@ -168,7 +171,7 @@ const createNetwork = options => {
     'pointlook',
     'usertoken',
     'workagent',
-  ] 
+  ]
   const nexuses = [
     root,
     network,
@@ -186,7 +189,7 @@ const createNetwork = options => {
     pointlook,
     usertoken,
     workagent,
-  ] 
+  ]
   const nodes = [
     root,
     accessnexus,
