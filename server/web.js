@@ -20,10 +20,10 @@ web.use(Gun.serve);
 // [END enable_parser]
 web.get('/peers', (req, res) => {
   // let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
-  let peers = Peers.get('peers');
-  console.log('1.web GET /peers data:',peers);
-  let answer = JSON.parse(peers)
-  console.log('2.web GET /peers answer:',answer);
+  let answer = Peers.get('peers');
+  console.log('1.web GET /peers data:',answer);
+  // let peers = JSON.parse(answer)
+  // console.log('2.web GET /peers peers:',peers);
   res.send(answer);
 });
 web.get('/gun.js', (req, res) => {
@@ -62,14 +62,14 @@ web.post('/submit', (req, res) => {
 });
 // [END add_post_handler]
 
-const setupBFS = () => {
-  // Grab the BrowserFS Emscripten FS plugin.
-  var BFS = new BrowserFS.EmscriptenFS();
-  // Create the folder that we'll turn into a mount point.
-  FS.createFolder(FS.root, 'data', true, true);
-  // Mount BFS's root folder into the '/data' folder.
-  FS.mount(BFS, {root: '/'}, '/data');
-}
+// const setupBFS = () => {
+//   // Grab the BrowserFS Emscripten FS plugin.
+//   var BFS = new BrowserFS.EmscriptenFS();
+//   // Create the folder that we'll turn into a mount point.
+//   FS.createFolder(FS.root, 'data', true, true);
+//   // Mount BFS's root folder into the '/data' folder.
+//   FS.mount(BFS, {root: '/'}, '/data');
+// }
 //
 const start = options => {
   const { port } = options

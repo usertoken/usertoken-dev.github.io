@@ -11,7 +11,7 @@ require('gun/nts');
 require('gun/axe');
 require('gun/sea');
 
-const peers = Peers.get('peers');
+const peers = JSON.parse(Peers.get('peers'));
 
 // const peers = [
 //   "https://usertoken-home.uc.r.appspot.com/gun",
@@ -101,7 +101,6 @@ const createNetwork = options => {
   const root = gun.get('/').put({});
   root.get('root').set(root).put({});
   //
-  console.log('1.network createNetwork peers:',peers)
   root.get('peers').put(JSON.stringify(peers));
   //
   const network = gun.get('network').put({});
@@ -171,7 +170,7 @@ const createNetwork = options => {
 //
 const network = options => {
   const web = Web.start(options);
-  console.log('1.network peers:',peers)
+  // console.log('1.network peers:',peers)
   const optGun = {file: seed, web, peers}
   // const { gun, root } = 
   return createNetwork(optGun);

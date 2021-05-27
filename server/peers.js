@@ -20,7 +20,7 @@ FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag
 const get = options => {
   let answer;
   switch (options) {
-    case 'peers' : answer = peers
+    case 'peers' : answer = JSON.stringify(peers)
       break
     default : answer = {}
   }
