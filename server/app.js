@@ -27,18 +27,18 @@ const network  = require('./network');
 const app = async options => {
   // Listen to the App Engine-specified port, or 8080 otherwise
   let port = process.env.PORT || options && options.port? options.port : 3000;
-  let root = {}
+  // let root = {}
   // console.log('1.app starting on port:', port)
   try {
-    const { gun } = await network({port})
+    const { gun, root } = await network({port})
+    if (gun) {
+      root = gun.get('/');
+      root.get('peers').map().once((peer, value)=> {
+        console.log('2.app peer:', value)
+      })
+    }
   } catch(e){
-    console.log('2.app network error:',e)
-  }
-  if (gun) {
-    root = gun.get('/');
-    root.get('paths').map().once((node, value)=> {
-      // console.log('3.app node:', value, node)
-    })
+    console.log('3.app network error:',e)
   }
 }
 app()

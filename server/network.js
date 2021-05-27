@@ -1,21 +1,24 @@
 
 // [START app]
-const express = require('express');
-const path = require('path');
+// const express = require('express');
+// const path = require('path');
 const Gun = require('gun');
 const shelljs = require('shelljs');
+const Web = require('./web');
 
-const web = express();
+// const web = express();
 
 require('gun/nts');
 require('gun/axe');
 require('gun/sea');
 
-const HOME = __dirname;
+// const HOME = __dirname;
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
 
 const peers = [
+  'https://usertoken-home.uc.r.appspot.com/gun',
+  'https://concise-rampart-314505.ew.r.appspot.com/gun',
   'https://seed.alex2006hw.com/gun',
   'https://seed.bellbella.com/gun',
   'https://seed.clouderg.com/gun',
@@ -30,37 +33,37 @@ const peers = [
 
 // [START enable_parser]
 // This middleware is available in Express v4.16.0 onwards
-web.use(express.static(HOME));
-web.use(express.json({extended: true}));
-web.use(Gun.serve);
+// web.use(express.static(HOME));
+// web.use(express.json({extended: true}));
+// web.use(Gun.serve);
 // [END enable_parser]
 
-web.get('/login', (req, res) => {
-  let answer = {msg:`Welcome from ${HOME}`, peers}
-  console.log(answer);
-  res.send({answer});
-});
+// web.get('/login', (req, res) => {
+//   let answer = {msg:`Welcome from ${HOME}`, peers}
+//   console.log(answer);
+//   res.send({answer});
+// });
 
-web.get('/:room', function(req, res) {
-      res.redirect('/?room=' + req.params.room);
-});
+// web.get('/:room', function(req, res) {
+//       res.redirect('/?room=' + req.params.room);
+// });
 
-// [START add_display_form]
-web.get('/submit', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/form.html'));
-});
-// [END add_display_form]
+// // [START add_display_form]
+// web.get('/submit', (req, res) => {
+//   res.sendFile(path.join(__dirname, '/views/form.html'));
+// });
+// // [END add_display_form]
 
-// [START add_post_handler]
-web.post('/submit', (req, res) => {
-  let answer = {
-    name: req.body.name,
-    message: req.body.message,
-  }
-  console.log(answer);
+// // [START add_post_handler]
+// web.post('/submit', (req, res) => {
+//   let answer = {
+//     name: req.body.name,
+//     message: req.body.message,
+//   }
+//   console.log(answer);
 
-  res.send({answer});
-});
+//   res.send({answer});
+// });
 // [END add_post_handler]
 const createNetworkNodes = options => {
   const { nexus, path, node } = options
@@ -74,9 +77,9 @@ const createNetworkConnections = options => {
   const { nexuses, path, nodes } = options
   for (const nexus of nexuses) createNetworkPaths({nexus, path, nodes})
 }
-const connectNetworkPaths = options => {
+const connectNetworkPeers = options => {
   const { nexus, nodes } = options
-  createNetworkPaths({nexus, path: 'paths', nodes})
+  createNetworkPaths({nexus, path: 'peers', nodes})
 }
 const setupPath = options => {
   const { path, node} = options
@@ -93,40 +96,6 @@ const setupNodesPath = options => {
 const setupRootPaths = options => {
   const { root, nodes } = options
   for (const node of nodes) node.get('root').set(root).put({});
-
-  // root.get('network').set(network).put({});
-  // root.get('accessnexus').set(accessnexus).put({});
-  // root.get('beaconnexus').set(beaconnexus).put({});
-  // root.get('hiddennexus').set(hiddennexus).put({});
-  // root.get('lognexus').set(lognexus).put({});
-  // root.get('metricnexus').set(metricnexus).put({});
-  // root.get('rewardnexus').set(rewardnexus).put({});
-
-  // root.get('alex2006hw').set(alex2006hw).put({});
-  // root.get('bellbella').set(bellbella).put({});
-  // root.get('clouderg').set(clouderg).put({});
-  // root.get('nautilusly').set(nautilusly).put({});
-  // root.get('pointlook').set(pointlook).put({});
-  // root.get('usertoken').set(usertoken).put({});
-  // root.get('workagent').set(workagent).put({});
-
-  // connecting the nodes
-  // root.get('paths').set(root).put({})
-  // root.get('paths').set(network).put({})
-  // root.get('paths').set(accessnexus).put({})
-  // root.get('paths').set(beaconnexus).put({});
-  // root.get('paths').set(hiddennexus).put({});
-  // root.get('paths').set(lognexus).put({});
-  // root.get('paths').set(metricnexus).put({});
-  // root.get('paths').set(rewardnexus).put({});
-
-  // root.get('paths').set(alex2006hw).put({});
-  // root.get('paths').set(bellbella).put({});
-  // root.get('paths').set(clouderg).put({});
-  // root.get('paths').set(nautilusly).put({});
-  // root.get('paths').set(pointlook).put({});
-  // root.get('paths').set(usertoken).put({});
-  // root.get('paths').set(workagent).put({});
 }
 //
 const createNetwork = options => {
@@ -211,13 +180,13 @@ const createNetwork = options => {
   //
   setupRootPaths({root, nodes})
   //
-  for (const nexus of nexuses) connectNetworkPaths({nexus, nodes})
+  for (const nexus of nexuses) connectNetworkPeers({nexus, nodes})
   //
   for (const path of paths) createNetworkConnections({path, nexuses, nodes})
   //
   for (const path of paths) setupNodesPath({path, nodes})
   //
-  // root.get('paths').map().once(node => {
+  // root.get('peers').map().once(node => {
   //   console.log('1.network createNetwork node:',{node})
   // })
   return ({gun,root})
@@ -225,21 +194,22 @@ const createNetwork = options => {
 
 const network = options => {
   const { port } = options
-  return web.listen(port, () => {
-    let answer = `Network listening on port ${port}...`
-    //
+  const web = Web.start({port});
+  // return web.listen(port, () => {
+  //   let answer = `Network listening on port ${port}...`
+  //   //
     const optGun = {file: seed, web, peers}
     //
     const { gun, root } = createNetwork(optGun);
     //
-    console.log({answer});
+    // console.log({answer});
     // console.log({root});
-    // root.get('paths').map().once(node => {
-    //   console.log('1.network node:',{node})
-    // })
-    //
+    root.get('peers').map().once(peer => {
+      console.log('1.network peer:',peer)
+    })
+  //   //
     return ({gun,root})
-  });
+  // });
 }
 
 // [END app]
