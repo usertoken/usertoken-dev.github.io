@@ -3,6 +3,7 @@
 const express = require('express');
 const Gun = require('gun');
 const path = require('path');
+// const BrowserFS = require('browserfs');
 const FS = require('fs');
 
 const web = express();
@@ -57,8 +58,18 @@ web.post('/submit', (req, res) => {
 });
 // [END add_post_handler]
 
+const setupBFS = () => {
+  // Grab the BrowserFS Emscripten FS plugin.
+  var BFS = new BrowserFS.EmscriptenFS();
+  // Create the folder that we'll turn into a mount point.
+  FS.createFolder(FS.root, 'data', true, true);
+  // Mount BFS's root folder into the '/data' folder.
+  FS.mount(BFS, {root: '/'}, '/data');
+}
+//
 const start = options => {
   const { port } = options
+  // setupBFS()
   web.listen(port, () => {
     let answer = `Web listening on port ${port}...`
     console.log({answer})

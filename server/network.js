@@ -2,6 +2,7 @@
 // [START app]
 const Gun = require('gun');
 const shelljs = require('shelljs');
+// const BrowserFS = require('browserfs');
 const FS = require('fs');
 const Web = require('./web');
 
@@ -23,11 +24,19 @@ const peers = [
   "https://gun-eu.herokuapp.com/gun",
   "https://gunjs.herokuapp.com/gun",
 ]
-let data = JSON.stringify(peers);
-FS.writeFileSync('/tmp/peers.json', data, {encoding:'utf8',flag:'w'});
+// const setupBFS = () => {
+//   // Grab the BrowserFS Emscripten FS plugin.
+//   var BFS = new BrowserFS.EmscriptenFS();
+//   // Create the folder that we'll turn into a mount point.
+//   FS.createFolder(FS.root, 'data', true, true);
+//   // Mount BFS's root folder into the '/data' folder.
+//   FS.mount(BFS, {root: '/'}, '/data');
+//   FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag:'w'});
+// }
 //
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
+FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag:'w'});
 //
 const createNetworkNodes = options => {
   const { nexus, path, node } = options
