@@ -24,7 +24,7 @@ const peers = [
   "https://gunjs.herokuapp.com/gun",
 ]
 let data = JSON.stringify(peers);
-FS.writeFileSync('./peers.json', data, {encoding:'utf8',flag:'w'});
+FS.writeFileSync('/tmp/peers.json', data, {encoding:'utf8',flag:'w'});
 //
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)

@@ -17,7 +17,7 @@ web.use(Gun.serve);
 
 // [END enable_parser]
 web.get('/peers', (req, res) => {
-  let answer = JSON.parse(fs.readFileSync('./peers.json', 'utf-8'))
+  let answer = JSON.parse(fs.readFileSync('/tmp/peers.json', 'utf-8'))
   console.log(answer);
   res.send(answer);
 });
