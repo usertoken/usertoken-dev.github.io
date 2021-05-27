@@ -4,7 +4,6 @@ const express = require('express');
 const Gun = require('gun');
 const path = require('path');
 const FS = require('fs');
-let peers = require('./peers.json');
 
 const web = express();
 
@@ -18,8 +17,9 @@ web.use(Gun.serve);
 
 // [END enable_parser]
 web.get('/peers', (req, res) => {
-  console.log(peers);
-  res.send(peers);
+  let answer = JSON.parse(fs.readFileSync('./peers.json', 'utf-8'))
+  console.log(answer);
+  res.send(answer);
 });
 web.get('/gun.js', (req, res) => {
   if(Gun.wsp.server(req, res)){ 

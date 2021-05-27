@@ -2,13 +2,29 @@
 // [START app]
 const Gun = require('gun');
 const shelljs = require('shelljs');
+const FS = require('fs');
 const Web = require('./web');
 
 require('gun/nts');
 require('gun/axe');
 require('gun/sea');
 
-const peers = require('./peers.json')
+const peers = [
+  "https://usertoken-home.uc.r.appspot.com/gun",
+  "https://concise-rampart-314505.ew.r.appspot.com/gun",
+  "https://seed.alex2006hw.com/gun",
+  "https://seed.bellbella.com/gun",
+  "https://seed.clouderg.com/gun",
+  "https://seed.pointlook.com/gun",
+  "https://seed.workagent.com/gun",
+  "https://seed.usertoken.com/gun",
+  "https://seed.nautilusly.com/gun",
+  "https://gun-us.herokuapp.com/gun",
+  "https://gun-eu.herokuapp.com/gun",
+  "https://gunjs.herokuapp.com/gun",
+]
+let data = JSON.stringify(peers);
+FS.writeFileSync('./peers.json', data, {encoding:'utf8',flag:'w'});
 //
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
