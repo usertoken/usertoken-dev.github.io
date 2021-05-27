@@ -14,7 +14,7 @@
 
 'use strict';
 // Listen to the App Engine-specified port, or 8080 otherwise
-const port = process.env.PORT || options && options.port? options.port : 8080;
+const port = process.env.PORT || 8080;
 //
 let oracles =[]
 let sortedOracles = []

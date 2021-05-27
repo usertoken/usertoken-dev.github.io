@@ -3,7 +3,8 @@
 const express = require('express');
 const Gun = require('gun');
 const path = require('path');
-
+const FS = require('fs');
+let peers = require('./peers.json');
 
 const web = express();
 
@@ -14,7 +15,20 @@ const HOME = __dirname;
 web.use(express.static(HOME));
 web.use(express.json({extended: true}));
 web.use(Gun.serve);
+
 // [END enable_parser]
+web.get('/peers', (req, res) => {
+  console.log(peers);
+  res.send(peers);
+});
+web.get('/gun.js', (req, res) => {
+  if(Gun.wsp.server(req, res)){ 
+		return; // filters gun requests!
+	}
+  console.log('1.web GET /gun.js');
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  FS.createReadStream(path.join(__dirname, 'node_modules', 'gun', 'gun.min.js')).pipe(res); // stream
+});
 
 web.get('/login', (req, res) => {
   let answer = {msg:`Welcome from ${HOME}`, peers}
@@ -25,7 +39,6 @@ web.get('/login', (req, res) => {
 web.get('/:room', function(req, res) {
       res.redirect('/?room=' + req.params.room);
 });
-
 // [START add_display_form]
 web.get('/submit', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/form.html'));
