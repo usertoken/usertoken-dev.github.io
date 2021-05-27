@@ -23,23 +23,36 @@
 // });
 
 const network  = require('./network');
+const utils = require('./utils');
 
-const app = async options => {
+const { flattenFilterAndSort } = utils;
+
+const startNetwork = async options => {
   // Listen to the App Engine-specified port, or 8080 otherwise
-  let port = process.env.PORT || options && options.port? options.port : 3000;
-  // let root = {}
-  // console.log('1.app starting on port:', port)
+  const port = process.env.PORT || options && options.port? options.port : 3000;
   try {
-    const { gun, root } = await network({port})
-    if (gun) {
-      root = gun.get('/');
-      root.get('peers').map().once((peer, value)=> {
-        console.log('2.app peer:', value)
-      })
-    }
+    return await network({port})
   } catch(e){
-    console.log('3.app network error:',e)
+    console.log('1.app network error:',e)
   }
+}
+const app = async options => {
+  let oracles =[]
+  let sortedOracles = []
+  const { gun, root } = await startNetwork(options)
+  if (root && root.get) {
+    // root = gun.get('/');
+    root.get('peers').once((peers, value)=> {
+      console.log('1.app peers:', peers)
+    })
+    root.get('oracles').map().once((oracle, value)=> {
+      oracles.push(value)
+      sortedOracles = flattenFilterAndSort(oracles)
+      // console.log('2.app oracles:', oracles)
+      // console.log('3.app sortedOracles:',sortedOracles)
+    })
+  }
+  return ({root,gun})
 }
 app()
 //

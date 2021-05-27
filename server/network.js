@@ -1,21 +1,16 @@
 
 // [START app]
-// const express = require('express');
-// const path = require('path');
 const Gun = require('gun');
 const shelljs = require('shelljs');
 const Web = require('./web');
-
-// const web = express();
 
 require('gun/nts');
 require('gun/axe');
 require('gun/sea');
 
-// const HOME = __dirname;
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
-
+//
 const peers = [
   'https://usertoken-home.uc.r.appspot.com/gun',
   'https://concise-rampart-314505.ew.r.appspot.com/gun',
@@ -30,41 +25,7 @@ const peers = [
   'https://gun-eu.herokuapp.com/gun',
   'https://gunjs.herokuapp.com/gun',
 ];
-
-// [START enable_parser]
-// This middleware is available in Express v4.16.0 onwards
-// web.use(express.static(HOME));
-// web.use(express.json({extended: true}));
-// web.use(Gun.serve);
-// [END enable_parser]
-
-// web.get('/login', (req, res) => {
-//   let answer = {msg:`Welcome from ${HOME}`, peers}
-//   console.log(answer);
-//   res.send({answer});
-// });
-
-// web.get('/:room', function(req, res) {
-//       res.redirect('/?room=' + req.params.room);
-// });
-
-// // [START add_display_form]
-// web.get('/submit', (req, res) => {
-//   res.sendFile(path.join(__dirname, '/views/form.html'));
-// });
-// // [END add_display_form]
-
-// // [START add_post_handler]
-// web.post('/submit', (req, res) => {
-//   let answer = {
-//     name: req.body.name,
-//     message: req.body.message,
-//   }
-//   console.log(answer);
-
-//   res.send({answer});
-// });
-// [END add_post_handler]
+//
 const createNetworkNodes = options => {
   const { nexus, path, node } = options
   nexus.get(path).set(node).put({});
@@ -77,9 +38,9 @@ const createNetworkConnections = options => {
   const { nexuses, path, nodes } = options
   for (const nexus of nexuses) createNetworkPaths({nexus, path, nodes})
 }
-const connectNetworkPeers = options => {
+const connectNetworkOracles = options => {
   const { nexus, nodes } = options
-  createNetworkPaths({nexus, path: 'peers', nodes})
+  createNetworkPaths({nexus, path: 'oracles', nodes})
 }
 const setupPath = options => {
   const { path, node} = options
@@ -99,13 +60,34 @@ const setupRootPaths = options => {
 }
 //
 const createNetwork = options => {
+  const paths = [
+    'root',
+    'network',
+    'accessnexus',
+    'beaconnexus',
+    'hiddennexus',
+    'lognexus',
+    'metricnexus',
+    'rewardnexus',
+  
+    'alex2006hw',
+    'bellbella',
+    'clouderg',
+    'nautilusly',
+    'pointlook',
+    'usertoken',
+    'workagent',
+  ];
+
   const gun = Gun(options);
   global.Gun = Gun; /// make global to `node --inspect` - debug only
   global.gun = gun; /// make global to `node --inspect` - debug only
   //
   const root = gun.get('/').put({});
-  root.get('root').set(root).put({})
-
+  root.get('root').set(root).put({});
+  //
+  root.get('peers').put(JSON.stringify(peers));
+  //
   const network = gun.get('network').put({});
 
   const accessnexus = gun.get('accessnexus').put({});
@@ -123,24 +105,6 @@ const createNetwork = options => {
   const usertoken = gun.get('usertoken').put({});
   const workagent = gun.get('workagent').put({});
   //
-  const paths = [
-    'root',
-    'network',
-    'accessnexus',
-    'beaconnexus',
-    'hiddennexus',
-    'lognexus',
-    'metricnexus',
-    'rewardnexus',
-
-    'alex2006hw',
-    'bellbella',
-    'clouderg',
-    'nautilusly',
-    'pointlook',
-    'usertoken',
-    'workagent',
-  ]
   const nexuses = [
     root,
     network,
@@ -150,7 +114,7 @@ const createNetwork = options => {
     lognexus,
     metricnexus,
     rewardnexus,
-
+  
     alex2006hw,
     bellbella,
     clouderg,
@@ -158,7 +122,7 @@ const createNetwork = options => {
     pointlook,
     usertoken,
     workagent,
-  ]
+  ];
   const nodes = [
     root,
     accessnexus,
@@ -167,7 +131,7 @@ const createNetwork = options => {
     lognexus,
     metricnexus,
     rewardnexus,
-
+  
     alex2006hw,
     bellbella,
     clouderg,
@@ -175,41 +139,31 @@ const createNetwork = options => {
     pointlook,
     usertoken,
     workagent,
-
-  ]
+  
+  ];
   //
   setupRootPaths({root, nodes})
   //
-  for (const nexus of nexuses) connectNetworkPeers({nexus, nodes})
+  for (const nexus of nexuses) connectNetworkOracles({nexus, nodes})
   //
   for (const path of paths) createNetworkConnections({path, nexuses, nodes})
   //
   for (const path of paths) setupNodesPath({path, nodes})
   //
-  // root.get('peers').map().once(node => {
-  //   console.log('1.network createNetwork node:',{node})
-  // })
   return ({gun,root})
 }
-
+//
 const network = options => {
   const { port } = options
   const web = Web.start({port});
-  // return web.listen(port, () => {
-  //   let answer = `Network listening on port ${port}...`
-  //   //
-    const optGun = {file: seed, web, peers}
-    //
-    const { gun, root } = createNetwork(optGun);
-    //
-    // console.log({answer});
-    // console.log({root});
-    root.get('peers').map().once(peer => {
-      console.log('1.network peer:',peer)
-    })
-  //   //
-    return ({gun,root})
-  // });
+  const optGun = {file: seed, web, peers}
+  // const { gun, root } = 
+  return createNetwork(optGun);
+  //
+  // root.get('oracles').map().once(oracle => {
+  //   console.log('1.network oracle:',oracle)
+  // })
+  // return ({gun,root})
 }
 
 // [END app]

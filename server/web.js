@@ -47,7 +47,7 @@ web.post('/submit', (req, res) => {
 const start = options => {
   const { port } = options
   web.listen(port, () => {
-    let answer = `Network listening on port ${port}...`
+    let answer = `Web listening on port ${port}...`
     console.log({answer})
   });
   return web
