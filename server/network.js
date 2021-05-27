@@ -154,8 +154,7 @@ const createNetwork = options => {
 }
 //
 const network = options => {
-  const { port } = options
-  const web = Web.start({port});
+  const web = Web.start(options);
   const optGun = {file: seed, web, peers}
   // const { gun, root } = 
   return createNetwork(optGun);

@@ -2,9 +2,11 @@ import React from 'react'
 import Framework from './framework/home'
 import Blogpage from './framework/index'
 
+const peers = [`${window.location.protocol}//${window.location.host}/gun`];
 const showFramework = true;
 
-function App() {
+const App = props => {
+  console.log('1.app pros:',props);
   if (showFramework)
   return (
     <>

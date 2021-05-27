@@ -13,23 +13,17 @@
 // limitations under the License.
 
 'use strict';
-
-// require('@google-cloud/debug-agent').start({
-//   serviceContext: {
-//     service: 'www',
-//     version: '1.0.0',
-//     enableCanary: true,
-//   }
-// });
-
+// Listen to the App Engine-specified port, or 8080 otherwise
+const port = process.env.PORT || options && options.port? options.port : 8080;
+//
+let oracles =[]
+let sortedOracles = []
+//
 const network  = require('./network');
 const utils = require('./utils');
-
 const { flattenFilterAndSort } = utils;
 
 const startNetwork = async options => {
-  // Listen to the App Engine-specified port, or 8080 otherwise
-  const port = process.env.PORT || options && options.port? options.port : 3000;
   try {
     return await network({port})
   } catch(e){
@@ -37,13 +31,10 @@ const startNetwork = async options => {
   }
 }
 const app = async options => {
-  let oracles =[]
-  let sortedOracles = []
   const { gun, root } = await startNetwork(options)
   if (root && root.get) {
-    // root = gun.get('/');
     root.get('peers').once((peers, value)=> {
-      console.log('1.app peers:', peers)
+      // console.log('1.app peers:', peers)
     })
     root.get('oracles').map().once((oracle, value)=> {
       oracles.push(value)
