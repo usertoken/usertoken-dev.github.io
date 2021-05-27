@@ -16,10 +16,13 @@ web.use(express.static(HOME));
 web.use(express.json({extended: true}));
 web.use(Gun.serve);
 
+let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
+
 // [END enable_parser]
 web.get('/peers', (req, res) => {
-  let answer = JSON.parse(fs.readFileSync('/tmp/peers.json', 'utf-8'))
-  console.log(answer);
+  console.log('1.web GET /peers data:',peers);
+  let answer = JSON.parse(peers)
+  console.log('2.web GET /peers answer:',answer);
   res.send(answer);
 });
 web.get('/gun.js', (req, res) => {
@@ -32,7 +35,7 @@ web.get('/gun.js', (req, res) => {
 });
 
 web.get('/login', (req, res) => {
-  let answer = {msg:`Welcome from ${HOME}`, peers}
+  let answer = {msg:`Welcome from ${HOME}`}
   console.log(answer);
   res.send({answer});
 });
