@@ -3,27 +3,30 @@
 const Gun = require('gun');
 const shelljs = require('shelljs');
 // const BrowserFS = require('browserfs');
-const FS = require('fs');
+// const FS = require('fs');
+const Peers = require('./peers');
 const Web = require('./web');
 
 require('gun/nts');
 require('gun/axe');
 require('gun/sea');
 
-const peers = [
-  "https://usertoken-home.uc.r.appspot.com/gun",
-  "https://concise-rampart-314505.ew.r.appspot.com/gun",
-  "https://seed.alex2006hw.com/gun",
-  "https://seed.bellbella.com/gun",
-  "https://seed.clouderg.com/gun",
-  "https://seed.pointlook.com/gun",
-  "https://seed.workagent.com/gun",
-  "https://seed.usertoken.com/gun",
-  "https://seed.nautilusly.com/gun",
-  "https://gun-us.herokuapp.com/gun",
-  "https://gun-eu.herokuapp.com/gun",
-  "https://gunjs.herokuapp.com/gun",
-]
+const peers = Peers.get('peers');
+
+// const peers = [
+//   "https://usertoken-home.uc.r.appspot.com/gun",
+//   "https://concise-rampart-314505.ew.r.appspot.com/gun",
+//   "https://seed.alex2006hw.com/gun",
+//   "https://seed.bellbella.com/gun",
+//   "https://seed.clouderg.com/gun",
+//   "https://seed.pointlook.com/gun",
+//   "https://seed.workagent.com/gun",
+//   "https://seed.usertoken.com/gun",
+//   "https://seed.nautilusly.com/gun",
+//   "https://gun-us.herokuapp.com/gun",
+//   "https://gun-eu.herokuapp.com/gun",
+//   "https://gunjs.herokuapp.com/gun",
+// ]
 // const setupBFS = () => {
 //   // Grab the BrowserFS Emscripten FS plugin.
 //   var BFS = new BrowserFS.EmscriptenFS();
@@ -36,7 +39,7 @@ const peers = [
 //
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
-FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag:'w'});
+// FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag:'w'});
 //
 const createNetworkNodes = options => {
   const { nexus, path, node } = options
@@ -98,6 +101,7 @@ const createNetwork = options => {
   const root = gun.get('/').put({});
   root.get('root').set(root).put({});
   //
+  console.log('1.network createNetwork peers:',peers)
   root.get('peers').put(JSON.stringify(peers));
   //
   const network = gun.get('network').put({});
@@ -167,6 +171,7 @@ const createNetwork = options => {
 //
 const network = options => {
   const web = Web.start(options);
+  console.log('1.network peers:',peers)
   const optGun = {file: seed, web, peers}
   // const { gun, root } = 
   return createNetwork(optGun);

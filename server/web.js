@@ -5,6 +5,7 @@ const Gun = require('gun');
 const path = require('path');
 // const BrowserFS = require('browserfs');
 const FS = require('fs');
+const Peers = require('./peers');
 
 const web = express();
 
@@ -16,10 +17,10 @@ web.use(express.static(HOME));
 web.use(express.json({extended: true}));
 web.use(Gun.serve);
 
-let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
-
 // [END enable_parser]
 web.get('/peers', (req, res) => {
+  // let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
+  let peers = Peers.get('peers');
   console.log('1.web GET /peers data:',peers);
   let answer = JSON.parse(peers)
   console.log('2.web GET /peers answer:',answer);
