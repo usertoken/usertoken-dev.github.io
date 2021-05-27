@@ -54,4 +54,4 @@ const start = options => {
 }
 
 // [END app]
-module.exports = start;
+module.exports = {start};
