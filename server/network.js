@@ -2,10 +2,10 @@
 // [START app]
 const Gun = require('gun');
 const shelljs = require('shelljs');
-// const BrowserFS = require('browserfs');
-// const FS = require('fs');
+
 const Peers = require('./peers');
 const Web = require('./web');
+const HyperSwarm = require('./hyperswarm');
 
 require('gun/nts');
 require('gun/axe');
@@ -13,33 +13,9 @@ require('gun/sea');
 
 const peers = JSON.parse(Peers.get('peers'));
 
-// const peers = [
-//   "https://usertoken-home.uc.r.appspot.com/gun",
-//   "https://concise-rampart-314505.ew.r.appspot.com/gun",
-//   "https://seed.alex2006hw.com/gun",
-//   "https://seed.bellbella.com/gun",
-//   "https://seed.clouderg.com/gun",
-//   "https://seed.pointlook.com/gun",
-//   "https://seed.workagent.com/gun",
-//   "https://seed.usertoken.com/gun",
-//   "https://seed.nautilusly.com/gun",
-//   "https://gun-us.herokuapp.com/gun",
-//   "https://gun-eu.herokuapp.com/gun",
-//   "https://gunjs.herokuapp.com/gun",
-// ]
-// const setupBFS = () => {
-//   // Grab the BrowserFS Emscripten FS plugin.
-//   var BFS = new BrowserFS.EmscriptenFS();
-//   // Create the folder that we'll turn into a mount point.
-//   FS.createFolder(FS.root, 'data', true, true);
-//   // Mount BFS's root folder into the '/data' folder.
-//   FS.mount(BFS, {root: '/'}, '/data');
-//   FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag:'w'});
-// }
 //
 const seed = `/tmp/${Date.now()}-seed`;
 shelljs.mkdir('-p',seed)
-// FS.writeFileSync('/tmp/peers.json', JSON.stringify(peers), {encoding:'utf8',flag:'w'});
 //
 const createNetworkNodes = options => {
   const { nexus, path, node } = options
@@ -170,15 +146,20 @@ const createNetwork = options => {
 //
 const network = options => {
   const web = Web.start(options);
-  // console.log('1.network peers:',peers)
-  const optGun = {file: seed, web, peers}
-  // const { gun, root } = 
-  return createNetwork(optGun);
-  //
-  // root.get('oracles').map().once(oracle => {
-  //   console.log('1.network oracle:',oracle)
-  // })
-  // return ({gun,root})
+  const swarmOptions = {
+    peers,
+    network: 'usertoken'
+  }
+  const swarm = HyperSwarm.start(swarmOptions);
+
+  const usertoken = {
+    web, peers, swarm,
+    multicast: false,
+    localStorage: false,
+    radisk: false,
+    file: false
+  };
+  return createNetwork(usertoken);
 }
 
 // [END app]

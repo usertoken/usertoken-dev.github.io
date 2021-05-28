@@ -3,9 +3,10 @@
 const express = require('express');
 const Gun = require('gun');
 const path = require('path');
-// const BrowserFS = require('browserfs');
 const FS = require('fs');
+const { ExpressPeerServer } = require("peer");
 const Peers = require('./peers');
+const { wSocket } = require('./channels');
 
 const web = express();
 
@@ -16,6 +17,11 @@ const HOME = __dirname;
 web.use(express.static(HOME));
 web.use(express.json({extended: true}));
 web.use(Gun.serve);
+
+const peerServer = ExpressPeerServer(web, {
+  debug: false,
+  path: "/peerjs"
+});
 
 // [END enable_parser]
 web.get('/peers', (req, res) => {
@@ -61,15 +67,10 @@ web.post('/submit', (req, res) => {
   res.send({answer});
 });
 // [END add_post_handler]
-
-// const setupBFS = () => {
-//   // Grab the BrowserFS Emscripten FS plugin.
-//   var BFS = new BrowserFS.EmscriptenFS();
-//   // Create the folder that we'll turn into a mount point.
-//   FS.createFolder(FS.root, 'data', true, true);
-//   // Mount BFS's root folder into the '/data' folder.
-//   FS.mount(BFS, {root: '/'}, '/data');
-// }
+//
+// [START websocket_handler]
+web.on("upgrade", (request, socket, head) => wSocket(request, socket, head))
+// [END websocket_handler]
 //
 const start = options => {
   const { port } = options
