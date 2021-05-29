@@ -1,15 +1,16 @@
 'use strict';
-// Listen to the App Engine-specified port, or 8080 otherwise
-const port = process.env.PORT || 8080;
 //
 let oracles =[]
 let sortedOracles = []
+
 //
-const network  = require('./network');
-const utils = require('./utils');
+const network  = require('./lib/network');
+const utils = require('./lib/utils');
 const { flattenFilterAndSort } = utils;
 
 const startNetwork = async options => {
+  // Listen to the App Engine-specified port, or 8080 otherwise
+  const port = options.port || process.env.PORT || 8080;
   try {
     return await network({port})
   } catch(e){
@@ -31,6 +32,6 @@ const app = async options => {
   }
   return ({root,gun})
 }
-app()
+app({})
 //
 module.exports = app;
