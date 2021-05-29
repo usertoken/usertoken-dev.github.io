@@ -9,78 +9,44 @@ const FS = require('fs');
 const { ExpressPeerServer } = require("peer");
 const Peers = require('./peers');
 const { wSocket } = require('./channels');
-const markoExpress = require("marko/express");
 const Keys = require('./keys/index');
-// const compiler = require('@marko/compiler');
-const template = require("../ui/index.marko");
 
 const web = express();
 
 const HOME = path.join(__dirname, '..');
 
 // [START enable_parser]
-require('lasso').configure({
-    bundlingEnabled: false,
-    minify: false,
-    fingerprintsEnabled: false,
-    outputDir: path.join(__dirname, 'static'),
-    plugins: [
-        'lasso-marko',
-        {
-          "plugin": "lasso-marko",
-          "config": {
-             "useCache": true
-          }
-        }
-    ]
-});
-//
-// compiler.configure({ output: "dom" });
 // This middleware is available in Express v4.16.0 onwards
 web.use("/", express.static(HOME));
-web.use("/ui", require('lasso/middleware').serveStatic());
 web.use(express.json({extended: true}));
 web.use(Gun.serve);
-web.use(markoExpress()); //enable res.marko(template, data)
 
 const peerServer = ExpressPeerServer(web, {
   debug: false,
   path: "/peerjs"
 });
 // [END enable_parser]
-routes.push({
-   name: 'ui',
-   route: '/ui',
-   controller: async function(req, res) {
-    res.marko(template, data = {
-    fname: "Amazing",
-    lname: "Person",
-    host: "Usertoken",
-    drinks : ["Token", "Beer", "Champagne"],
-    title: "UserToken",
-    key: await Keys.masterkey(),
-   });
- }
-});
-routes.forEach(function(r) {
-    web.use(r.route, r.controller);
-});
+const stackRouter = () => {
+  routes.push({
+    name: 'ui',
+    route: '/ui',
+    controller: async function(req, res) {
+      let answer = 'stackrouter'
+      res.send({answer})
+    }
+  });
+  routes.forEach(function(r) {
+      web.use(r.route, r.controller);
+  });
+};
+
 web.get('/', async function(req, res) {
     await res.sendFile(path.join(HOME, 'index.html'));
 })
-
-web.get('/oldui', async function(req, res) {
-  console.log("1.web GET /ui");
-  res.marko(template, data={
-    fname: "Amazing",
-    lname: "Person",
-    host: "Usertoken",
-    drinks : ["Token", "Beer", "Champagne"],
-    title: "UserToken",
-    key: await Keys.masterkey(),
-  });
-});
 // [START web API]
+web.get('/masterkey', async (req,res) => {
+  res.send(await Keys.masterkey())
+});
 web.get('/peers', (req, res) => {
   // let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
   let answer = Peers.get('peers');
@@ -89,7 +55,6 @@ web.get('/peers', (req, res) => {
   // console.log('2.web GET /peers peers:',peers);
   res.send(answer);
 });
-
 web.get('/gun.js', (req, res) => {
   if(Gun.wsp.server(req, res)){
 		return; // filters gun requests!

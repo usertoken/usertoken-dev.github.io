@@ -2,11 +2,10 @@
 //
 let oracles =[]
 let sortedOracles = []
-
 //
 const network  = require('./lib/network');
 const utils = require('./lib/utils');
-const { flattenFilterAndSort } = utils;
+const { flattenFilterAndSort, copyfs } = utils;
 
 const startNetwork = async options => {
   // Listen to the App Engine-specified port, or 8080 otherwise
