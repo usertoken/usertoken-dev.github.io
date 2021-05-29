@@ -1,5 +1,5 @@
 //
-let examples = [];
+let routes = [];
 require("marko/node-require"); // Allow Node.js to require and load `.marko` files
 // [START app]
 const express = require('express');
@@ -16,7 +16,7 @@ const template = require("../ui/index.marko");
 
 const web = express();
 
-// const MARKO = path.join(__dirname, 'marko');
+const HOME = path.join(__dirname, '..');
 
 // [START enable_parser]
 require('lasso').configure({
@@ -25,14 +25,20 @@ require('lasso').configure({
     fingerprintsEnabled: false,
     outputDir: path.join(__dirname, 'static'),
     plugins: [
-        'lasso-marko'
+        'lasso-marko',
+        {
+          "plugin": "lasso-marko",
+          "config": {
+             "useCache": true
+          }
+        }
     ]
 });
 //
 // compiler.configure({ output: "dom" });
 // This middleware is available in Express v4.16.0 onwards
-web.use(require('lasso/middleware').serveStatic());
-// web.use(express.static(HOME));
+web.use("/", express.static(HOME));
+web.use("/ui", require('lasso/middleware').serveStatic());
 web.use(express.json({extended: true}));
 web.use(Gun.serve);
 web.use(markoExpress()); //enable res.marko(template, data)
@@ -42,22 +48,28 @@ const peerServer = ExpressPeerServer(web, {
   path: "/peerjs"
 });
 // [END enable_parser]
-const markoRouting = () => {
-        examples.push({
-            name: example,
-            route: '/' + name,
-            controller: function(req, res) {
-                res.marko(template, {
-                    examples: examples
-                });
-            }
-        });
+routes.push({
+   name: 'ui',
+   route: '/ui',
+   controller: async function(req, res) {
+    res.marko(template, data = {
+    fname: "Amazing",
+    lname: "Person",
+    host: "Usertoken",
+    drinks : ["Token", "Beer", "Champagne"],
+    title: "UserToken",
+    key: await Keys.masterkey(),
+   });
+ }
+});
+routes.forEach(function(r) {
+    web.use(r.route, r.controller);
+});
+web.get('/', async function(req, res) {
+    await res.sendFile(path.join(HOME, 'index.html'));
+})
 
-  examples.forEach(function(example) {
-      web.use(example.route, example.controller);
-  });
-}
-web.get('/ui', async function(req, res) {
+web.get('/oldui', async function(req, res) {
   console.log("1.web GET /ui");
   res.marko(template, data={
     fname: "Amazing",
@@ -77,6 +89,7 @@ web.get('/peers', (req, res) => {
   // console.log('2.web GET /peers peers:',peers);
   res.send(answer);
 });
+
 web.get('/gun.js', (req, res) => {
   if(Gun.wsp.server(req, res)){
 		return; // filters gun requests!
