@@ -1,6 +1,4 @@
 //
-let routes = [];
-require("marko/node-require"); // Allow Node.js to require and load `.marko` files
 // [START app]
 const express = require('express');
 const Gun = require('gun');
@@ -27,6 +25,7 @@ const peerServer = ExpressPeerServer(web, {
 });
 // [END enable_parser]
 const stackRouter = () => {
+let routes = [];
   routes.push({
     name: 'ui',
     route: '/ui',
