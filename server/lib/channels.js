@@ -20,16 +20,17 @@ const SEA = Gun.SEA;
 let gun = {};
 let sigs = {};
 let swarmSocket;
+let pathname = url.pathname || "/gun";
 
 const swarmApi = async ({network,socket,peers}) => {
   Gun.on('opt',function(ctx){
     if(ctx.once) return;
     ctx.on('in',function(msg){
-      console.log("1.channels in msg",msg);
+      // console.log("1.channels in msg",msg);
       this.to.next(msg);
     })
     ctx.on('out',function(msg){
-      console.log("2.channels out msg",msg);
+      // console.log("2.channels out msg",msg);
       this.to.next(msg);
     })
   })
@@ -45,7 +46,7 @@ const swarmApi = async ({network,socket,peers}) => {
   if (swarmLru.has(network)) {
     // Existing Node
     swarmSocket = await swarmLru.get(network);
-    console.log("1.channels swarmApi network:", network);
+    // console.log("1.channels swarmApi network:", network);
   }
   swarmLru.set(network, socket);
 }

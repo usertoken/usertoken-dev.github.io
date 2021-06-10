@@ -4,6 +4,7 @@ const express = require('express');
 const Gun = require('gun');
 const path = require('path');
 const FS = require('fs');
+// const Mdns = require('./mdns');
 const { ExpressPeerServer } = require("peer");
 const Peers = require('./peers');
 const { wSocket } = require('./channels');
@@ -100,6 +101,7 @@ const start = options => {
   // setupBFS()
   web.listen(port, () => {
     let answer = `Web listening on port ${port}...`
+    // const mdns = Mdns.start({port});
     console.log({answer})
   });
   return web

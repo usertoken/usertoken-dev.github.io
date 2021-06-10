@@ -6,6 +6,9 @@ const shelljs = require('shelljs');
 const Peers = require('./peers');
 const Web = require('./web');
 const HyperSwarm = require('./hyperswarm');
+const MulticastDns = require('./multicast-dns');
+// const Mdns = require('./mdns');
+const Bonjour = require('./bonjour');
 
 require('gun/nts');
 require('gun/axe');
@@ -69,13 +72,15 @@ const createNetwork = options => {
     'usertoken',
     'workagent',
   ];
-
-  const gun = Gun(options);
+  const { gunoptions, host, dnsconfig } = options
+  const gun = Gun(gunoptions);
   global.Gun = Gun; /// make global to `node --inspect` - debug only
   global.gun = gun; /// make global to `node --inspect` - debug only
   //
   const root = gun.get('/').put({});
-  root.get('root').set(root).put({});
+  if(dnsconfig && dnsconfig.port && host)
+    root.get('root').set(root).put({address:host,port:dnsconfig.port})
+  else root.get('root').set(root).put({})
   //
   root.get('peers').put(JSON.stringify(peers));
   //
@@ -151,15 +156,31 @@ const network = options => {
     network: 'usertoken'
   }
   const swarm = HyperSwarm.start(swarmOptions);
-
-  const usertoken = {
-    web, peers, swarm,
+  
+  // const mdns = Mdns.start(swarmOptions);
+  const bonjour = Bonjour.start(swarmOptions);
+  const gunoptions = {
+    web, peers,
     multicast: false,
     localStorage: false,
     radisk: false,
     file: false
+  }
+  const usertoken = {
+    gunoptions,
+    swarm,
   };
-  return createNetwork(usertoken);
+  // console.log('1.network start:',host,dnsconfig)
+  const result = createNetwork(usertoken);
+  
+
+  const mdnsOptions = {
+    ...result, ...gunoptions
+  }
+
+  MulticastDns.start(mdnsOptions);
+ 
+  return(mdnsOptions)
 }
 
 // [END app]
