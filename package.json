@@ -9,7 +9,7 @@
     "prebuild": "npm run clean",
     "postinstall": "npx npm-run-all -l -p install:*",
     "install:elements": "(cd elements;npx yarn)",
-    "install:server": "(cd server;npx yarn),
+    "install:server": "(cd server;npx yarn)",
     "build": "npx npm-run-all -l -p build:*",
     "build:elements": "(cd elements;npm run build)",
     "build:server": "(cd server;npm run build)",
