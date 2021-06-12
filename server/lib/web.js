@@ -7,8 +7,8 @@ const FS = require('fs');
 // const Mdns = require('./mdns');
 const { ExpressPeerServer } = require("peer");
 const Peers = require('./peers');
-const { wSocket } = require('./channels');
-const Keys = require('./keys/index');
+const { wSocket } = require('./conduits/channels');
+const { utils }  = require('./utils/index');
 
 const web = express();
 
@@ -45,7 +45,8 @@ web.get('/', async function(req, res) {
 })
 // [START web API]
 web.get('/masterkey', async (req,res) => {
-  res.send(await Keys.masterkey())
+  const { keys } = utils;
+  res.send(await keys.masterkey())
 });
 web.get('/peers', (req, res) => {
   // let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
@@ -96,8 +97,9 @@ web.on("upgrade", (request, socket, head) => wSocket(request, socket, head))
 // [END websocket_handler]
 // [START web API]
 //
-const start = options => {
-  const { port } = options
+const start = async options => {
+  // Listen to the App Engine-specified port, or 8080 otherwise
+  const port = options.port || process.env.PORT || 8080;
   // setupBFS()
   web.listen(port, () => {
     let answer = `Web listening on port ${port}...`

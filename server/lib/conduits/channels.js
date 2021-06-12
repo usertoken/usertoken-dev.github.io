@@ -8,7 +8,7 @@ const QuickLRU = require("quick-lru");
 const lru = new QuickLRU({ maxSize: 10, onEviction: false });
 const swarmLru = new QuickLRU({ maxSize: 10, onEviction: false });
 
-const peers = require('./peers').get('peers');
+const peers = require('../peers').get('peers');
 
 require("./gun-ws.js"); // required to allow external websockets into gun constructor
 require("./mem.js"); // disable to allow file writing for debug

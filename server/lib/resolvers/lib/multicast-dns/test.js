@@ -1,4 +1,4 @@
-var mdns = require('../lib/resolvers/lib/multicast-dns/index')
+var mdns = require('./')
 var tape = require('tape')
 var dgram = require('dgram')
 
@@ -14,8 +14,8 @@ var port = function (cb) {
 }
 
 var configs = [
-  // {ip: '127.0.0.1', multicast: false}
-  {'interface': '0.0.0.0', multicast: true}
+  {ip: '127.0.0.1', multicast: false}
+  // {'interface': '127.0.0.1', multicast: true}
 ]
 
 var tests = configs.map(function (config) {

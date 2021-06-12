@@ -1,5 +1,9 @@
 ///
 const fs = require('fs');
+const logger = require('./logger')
+const stream = require('./stream')
+const keys = require('./keys/index')
+
 const flattenFilterAndSort = arr => {
   let flatArray = [];
   for(var i = 0; i < arr.length; i++) {
@@ -37,4 +41,11 @@ const movefs = (oldPath, newPath, callback) => {
     });
 }
 ///
-module.exports = { flattenFilterAndSort, movefs };
+module.exports = {
+    flattenFilterAndSort, 
+    copyfs,
+    movefs,
+    logger,
+    keys,
+    stream,
+};

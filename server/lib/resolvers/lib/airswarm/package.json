@@ -1,0 +1,27 @@
+{
+  "name": "airswarm",
+  "version": "1.1.0",
+  "description": "Network swarm that automagically discovers other peers on the network using multicast dns",
+  "main": "index.js",
+  "dependencies": {
+    "multicast-dns": "^3.0.0",
+    "network-address": "^1.0.0"
+  },
+  "devDependencies": {
+    "standard": "^5.2.1",
+    "tape": "^4.2.0"
+  },
+  "scripts": {
+    "test": "standard && tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/airswarm.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/airswarm/issues"
+  },
+  "homepage": "https://github.com/mafintosh/airswarm"
+}

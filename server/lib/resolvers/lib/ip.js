@@ -52,10 +52,12 @@ ip.toBuffer = function(ip, buff, offset) {
       result[offset++] = word & 0xff;
     }
   }
-
-  if (!result) {
-    throw Error('Invalid ip address: ' + ip);
-  }
+  //
+  // disabled to support pattern "ip:port"
+  //
+  // if (!result) {
+  //   throw Error('Invalid ip address: ' + ip);
+  // }
 
   return result;
 };

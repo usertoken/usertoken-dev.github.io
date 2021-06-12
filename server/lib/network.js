@@ -5,10 +5,10 @@ const shelljs = require('shelljs');
 
 const Peers = require('./peers');
 const Web = require('./web');
-const HyperSwarm = require('./hyperswarm');
-const MulticastDns = require('./multicast-dns');
+// const HyperSwarm = require('./hyperswarm');
+// const MulticastDns = require('./multicast-dns');
 // const Mdns = require('./mdns');
-const Bonjour = require('./bonjour');
+// const Bonjour = require('./bonjour');
 
 require('gun/nts');
 require('gun/axe');
@@ -48,12 +48,12 @@ const setupNodesPath = options => {
   const { nodes, path } = options
   setupNodes({nodes, path})
 }
-const setupRootPaths = options => {
+const setupRootPaths = async options => {
   const { root, nodes } = options
   for (const node of nodes) node.get('root').set(root).put({});
 }
 //
-const createNetwork = options => {
+const createNetwork = async options => {
   const paths = [
     'root',
     'network',
@@ -72,15 +72,13 @@ const createNetwork = options => {
     'usertoken',
     'workagent',
   ];
-  const { gunoptions, host, dnsconfig } = options
+  const { gunoptions } = options
   const gun = Gun(gunoptions);
   global.Gun = Gun; /// make global to `node --inspect` - debug only
   global.gun = gun; /// make global to `node --inspect` - debug only
   //
   const root = gun.get('/').put({});
-  if(dnsconfig && dnsconfig.port && host)
-    root.get('root').set(root).put({address:host,port:dnsconfig.port})
-  else root.get('root').set(root).put({})
+  root.get('root').set(root).put({})
   //
   root.get('peers').put(JSON.stringify(peers));
   //
@@ -138,7 +136,7 @@ const createNetwork = options => {
   
   ];
   //
-  setupRootPaths({root, nodes})
+  await setupRootPaths({root, nodes})
   //
   for (const nexus of nexuses) connectNetworkOracles({nexus, nodes})
   //
@@ -149,16 +147,14 @@ const createNetwork = options => {
   return ({gun,root})
 }
 //
-const network = options => {
-  const web = Web.start(options);
-  const swarmOptions = {
-    peers,
-    network: 'usertoken'
-  }
-  const swarm = HyperSwarm.start(swarmOptions);
-  
-  // const mdns = Mdns.start(swarmOptions);
-  const bonjour = Bonjour.start(swarmOptions);
+const network = async options => {
+  // const swarmOptions = {
+  //   peers,
+  //   network: 'usertoken'
+  // }
+  // const swarm = HyperSwarm.start(swarmOptions);
+
+  const web = await Web.start(options);
   const gunoptions = {
     web, peers,
     multicast: false,
@@ -168,19 +164,20 @@ const network = options => {
   }
   const usertoken = {
     gunoptions,
-    swarm,
   };
+
+  // const mdns = Mdns.start(swarmOptions);
+  // const bonjour = Bonjour.start(swarmOptions);
   // console.log('1.network start:',host,dnsconfig)
-  const result = createNetwork(usertoken);
-  
 
-  const mdnsOptions = {
-    ...result, ...gunoptions
-  }
+  // const mdnsOptions = {
+  //   ...result, ...gunoptions
+  // }
 
-  MulticastDns.start(mdnsOptions);
- 
-  return(mdnsOptions)
+  // MulticastDns.start(mdnsOptions);
+  const result = await createNetwork(usertoken);
+  if(result && result.root && result.root.get) result.root.get('root').put({peers})
+  return(result)
 }
 
 // [END app]

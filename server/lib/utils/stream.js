@@ -7,7 +7,7 @@ const stream = (socket)=>{
         if(socket.adapter.rooms[data.room].length > 1){
             socket.emit('newuser', {socketId:data.socketId});
         }
-        console.log(socket.rooms);
+        console.log('subscribe rooms',socket.rooms);
     }
 
     else if(key == 'newUserStart'){

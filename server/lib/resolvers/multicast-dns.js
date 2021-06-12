@@ -1,7 +1,7 @@
 // const mdns = require('mdns');
 const publicIp = require('public-ip');
-var MDNS = require('multicast-dns')
 var dgram = require('dgram')
+var MDNS = require('./lib/multicast-dns')
 const dnsApi = require('./multicast-dns-api')
 
 var port = (cb) => {
@@ -25,7 +25,8 @@ const publicIP = async () => {
 	//=> 'fe80::200:f8ff:fe21:67cf'
 }
 const start = async options => {
-  const { peers } = options
+  // console.log('1.multicast-dns options:',options)
+  const { root, peers } = options
   try {
     const host = await publicIP()
     const MDNSconfig = {
@@ -52,11 +53,11 @@ const start = async options => {
         // console.log('2.multicast-dns got a query questions length:', query.questions.length)
         query.questions.forEach((question, index) => {
           // console.log(`3.multicast-dns (${index}) | name:`, question.name);
-          dnsApi({peers, dns,host,dnsconfig: MDNSconfig,question})
+          dnsApi({root,dns,host,...MDNSconfig,peers,question})
         })
       }
     })
-    return {dns, host, dnsconfig: MDNSconfig}
+    return {dns, host, ...MDNSconfig}
   } catch(e) {
     console.log('1.multicast-dns error:',e)
     return(null)
