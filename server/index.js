@@ -37,10 +37,18 @@ const app = async options => {
         // console.log('2.app oracles:', oracles)
         // console.log('3.app sortedOracles:',sortedOracles)
       })
-      let requestID = 'onboarding'
-      root.get(requestID).put("{id: '5678', data: 'say yes'}")
+      //
+      // root message response
+      //
+      root.get('response').on(response => {
+        console.log('4.app api response:',response)
+      })
+      root.get('request').put("{id: '5678', data: 'say yes'}")
+      //
+      // direct response
+      //
       const response = api({root})
-      console.log('4.app api response:',response)
+      console.log('5.app api response:',response)
       // return ({root,gun})
     }
   // } catch(e) {
