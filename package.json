@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "(cd server;npm start)",
+    "dev": "(cd server;npm run dev)",
     "clean": "npx shx rm -rf ./build",
     "prebuild": "npm run clean",
     "postinstall": "npx npm-run-all -l -p install:*",

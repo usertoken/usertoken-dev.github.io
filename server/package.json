@@ -13,8 +13,8 @@
     "build:assets": "npx shx cp -r assets ./build",
     "build:lib": "npx shx cp -r lib ./build",
     "start": "node index.js",
-    "dev": "nodemon --watch \"./\" --exec \"node index.js\"",
-    "test": "mocha test/*.test.js --exit --timeout=20000",
+    "dev": "npx nodemon --watch \"./\" --exec \"node index.js\"",
+    "test": "npx mocha test/*.test.js --exit --timeout=20000",
     "unlock": "npx npm-run-all -l -p unlock:*",
     "unlock:package": "find . -name package-lock.json | xargs rm -f",
     "unlock:yarn": "find . -name yarn.lock | xargs rm -f"

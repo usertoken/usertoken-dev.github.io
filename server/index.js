@@ -3,6 +3,7 @@
 let oracles =[]
 let sortedOracles = []
 //
+const api = require('./api/index');
 const { network, utils, resolvers }  = require('./lib/index');
 const { flattenFilterAndSort, copyfs } = utils;
 const { mdns } = resolvers;
@@ -36,6 +37,10 @@ const app = async options => {
         // console.log('2.app oracles:', oracles)
         // console.log('3.app sortedOracles:',sortedOracles)
       })
+      let requestID = 'onboarding'
+      root.get(requestID).put("{id: '5678', data: 'say yes'}")
+      const response = api({root})
+      console.log('4.app api response:',response)
       // return ({root,gun})
     }
   // } catch(e) {
