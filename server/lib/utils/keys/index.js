@@ -34,7 +34,7 @@ const newSubkeys = async options => {
     const masterkeyOptions = {
         start,end,context,keysize
     }
-    const hexkey = await masterKeyCreate(masterkeyOptions)
+    const hexkey = options && options.masterkey? options.masterkey : await masterKeyCreate(masterkeyOptions)
     const subkeysOptions = {
         ...masterkeyOptions,
         hexkey
@@ -43,4 +43,4 @@ const newSubkeys = async options => {
     return(subKeys)
 }
 ////
-module.exports = { masterkey: masterKeyCreate, subkeys }
+module.exports = { masterkey: masterKeyCreate, subkeys: newSubkeys }

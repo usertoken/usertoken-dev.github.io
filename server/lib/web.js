@@ -44,9 +44,11 @@ web.get('/', async function(req, res) {
     await res.sendFile(path.join(HOME, 'index.html'));
 })
 // [START web API]
-web.get('/masterkey', async (req,res) => {
+web.get('/masterkey', (req,res) => {
   const { keys } = utils;
-  res.send(await keys.masterkey())
+  keys.masterkey(mkey => {
+    res.send(mkey)
+  })
 });
 web.get('/peers', (req, res) => {
   // let peers = FS.readFileSync('/tmp/peers.json', 'utf-8')
