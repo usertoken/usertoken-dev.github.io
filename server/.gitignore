@@ -1,2 +1,6 @@
-node_modules
-build
+oracle/node_modules/
+oracle/nautilus-services/build/                                                                               │··············
+oracle/build/                                                                                                 │··············
+oracle/nautilus-services/build/
+build/                                                                                                        │··············
+contract/node_modules/                                                                                        │··············

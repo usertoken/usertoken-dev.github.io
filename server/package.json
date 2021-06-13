@@ -1,27 +1,23 @@
 {
-  "name": "usertoken",
+  "name": "backend",
   "version": "0.0.1",
-  "description": "Usertoken standard environment.",
+  "description": "back-end standard environment.",
   "private": true,
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "clean": "npx shx rm -rf ./build ./radata",
     "prebuild": "npm run clean;npx shx mkdir -p ./build",
     "build": "npx npm-run-all -l -p build:*",
     "build:js": "npx shx cp -r *.js ./build",
     "build:json": "npx shx cp -r *.json ./build",
-    "build:yaml": "npx shx cp -r *.yaml ./build",
     "build:assets": "npx shx cp -r assets ./build",
     "build:lib": "npx shx cp -r lib ./build",
-    "start": "node app.js",
-    "dev": "nodemon --watch \"./\" --exec \"node app.js\"",
-    "predeploy": "gcloud debug source gen-repo-info-file",
-    "deploy": "gcloud app deploy",
-    "test": "mocha test/*.test.js --exit --timeout=20000"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+    "start": "node index.js",
+    "dev": "nodemon --watch \"./\" --exec \"node index.js\"",
+    "test": "mocha test/*.test.js --exit --timeout=20000",
+    "unlock": "npx npm-run-all -l -p unlock:*",
+    "unlock:package": "find . -name package-lock.json | xargs rm -f",
+    "unlock:yarn": "find . -name yarn.lock | xargs rm -f"
   },
   "engines": {
     "node": ">=14"
