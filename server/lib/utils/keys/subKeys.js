@@ -69,11 +69,12 @@ async function create(options) {
     // logger.log({level: 'info', message: '1.subkeys options :',options, masterKey})
     // subkeys[0] = hexkey
     // for (i=start;i<end;i++) {
-        await sodium.crypto_kdf_derive_from_key(keysize, start, context, masterKey).then(key => {
+        return await sodium.crypto_kdf_derive_from_key(keysize, start, context, masterKey).then(key => {
             const subkey = key.getBuffer().toString('hex')
             // subkeys[i-start] =  Buffer.from(hexkey, 'hex')
-            logger.log({level: 'info', message: '1.subkeys create', subkey})
-            return subkey
+            const   result = {masterkey: hexkey, subkey}
+            // logger.log({level: 'info', message: '1.subkeys create', result})
+            return result
         })
     // })
     // subkeys[1] = await sodium.crypto_kdf_derive_from_key(32, 1, context, masterKey);

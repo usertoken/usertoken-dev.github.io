@@ -16,11 +16,8 @@ const startNetwork = async options => {
   }
 }
 const app = async options => {
-  // try {
-    // const { gun, root } = 
-    const { root, gun } = await startNetwork(options)
+    const { root } = await startNetwork(options)
     if (root && root.get) {
-      // const root = gun.get('root')
       root.get('address').once((address, index)=> {
         // console.log('1.app address:', address)
       })
@@ -43,18 +40,17 @@ const app = async options => {
       root.get('response').on(response => {
         console.log('4.app api response:',response)
       })
-      root.get('request').put("{id: '5678', data: 'say yes'}")
+      root.get('request').put("{id: \"5678\", task: \"echo\", data: \"say yes\"}")
+      //
+      root.get('request').put("{id: \"2345\", task: \"newkey\"}")
       //
       // direct response
       //
-      const response = api({root})
-      console.log('5.app api response:',response)
-      // return ({root,gun})
+      // const response = 
+      api({root})
+      // console.log('5.app api response:',response)
+      return ({root})
     }
-  // } catch(e) {
-    // console.log('1.app error:',e)
-    return ({root,gun})
-  // }
 }
 app({})
 //

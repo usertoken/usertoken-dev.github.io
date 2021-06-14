@@ -2,17 +2,22 @@ const masterkey = require('./masterKey')
 const subkeys = require('./subKeys')
 
 const subkeyCreate = (options) => {
-    return new Promise((resolve,reject) => {
-        subkeys.create(options).then(keys => {
-            // console.log('2.index subkey count :',keys.length)
-            // for (i=0;i<keys.length;i++)
-            // const i = Math.floor(
-            //     Math.random() * (keys.length - 1 + 1) + 1
-            // )
-            // console.log('3.index subkeys :',i,keys[i].toString('hex'))
-            resolve(keys)
-        })
-    })
+    const result = subkeys.create(options)
+    // return new Promise((resolve,reject) => {
+        // subkeys.create(options).then(keys => {
+        //     // console.log('2.index subkey count :',keys.length)
+        //     // for (i=0;i<keys.length;i++)
+        //     // const i = Math.floor(
+        //     //     Math.random() * (keys.length - 1 + 1) + 1
+        //     // )
+        //     // console.log('3.index subkeys :',i,keys[i].toString('hex'))
+        //     console.log('1.keys subkeyCreate:',keys)
+        //     if (keys) resolve(keys) 
+        //     // reject(keys)
+        // })
+    // })
+    // console.log('1.keys subkeyCreate:',result)
+    return result
 }
 const masterKeyCreate = (options) => {
     return new Promise((resolve,reject) => {
@@ -24,7 +29,7 @@ const masterKeyCreate = (options) => {
     })
  
 }
-const newSubkeys = async options => {
+const newkeys = async options => {
     // const keyLimit = Math.pow(2,64) // 18446744073709552000
     // const maxCount = Math.pow(2,16)
     const start = options && options.start? options.start : 10
@@ -39,8 +44,10 @@ const newSubkeys = async options => {
         ...masterkeyOptions,
         hexkey
     }
-    const subKeys = await subkeyCreate(subkeysOptions)
-    return(subKeys)
+    const keys = await subkeyCreate(subkeysOptions)
+    // const result = {masterkey:hexkey, subkeys}
+    // console.log('1.keys newkeys:',keys)
+    return(keys)
 }
 ////
-module.exports = { masterkey: masterKeyCreate, subkeys: newSubkeys }
+module.exports = { newkeys }
